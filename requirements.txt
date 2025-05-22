@@ -1,0 +1,19 @@
+# numpy
+
+einops
+pip>=23.0
+pytorch_metric_learning
+plotly
+wandb
+# tensorflow[and-cuda]
+# torch==2.0.1#+cu124
+# torchvision==0.15.2#+cu124
+# torchaudio==2.0.2#+cu124
+
+# torch
+# tqdm
+# torchsummary
+# torchvision
+# scikit-learn
+# matplotlib
+# pandas

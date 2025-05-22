@@ -1,0 +1,11 @@
+srun -K  --job-name=activity \
+	 --partition=RTX3090 \
+	 --gpus=1 \
+	 --cpus-per-task=1 \
+	 --mem=40G \
+         --container-image=/netscratch/enroot/nvcr.io_nvidia_pytorch_23.02-py3.sqsh \
+         --container-workdir=`pwd` \
+         --container-mounts=/netscratch:/netscratch,/ds:/ds,`pwd`:`pwd` \
+         --export="NCCL_SOCKET_IFNAME=bond,NCCL_IB_HCA=mlx5" \
+         --time=4:00:00 --immediate=300 --mail-type=BEGIN --mail-user=dhruv_aditya.mittal@dfki.de \
+         --pty /bin/bash -i 

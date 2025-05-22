@@ -1,0 +1,11 @@
+
+validation_losses = [VL1, VL2, VL3, ......, VLN] # Validation Losses Before Training the Model
+
+for each epoch
+    weights = []
+    train_losses = [TL1, TL2, TL3, ....., TLN]  # Getting all the different train_losses
+    for each train_loss:
+        weight = (TL_i/TV_i)*(TL_i/Sum(train_losses)) # Getting the weights of the losses
+        weights.append(weight)
+   total_loss = Weight_1*TL_1 + Weight_2*TL_2 ...........+ Weight_N*TL_N  # Final Training Loss Function
+   Calulate validation_losses     # Recalculating the validation loss.
