@@ -65,7 +65,7 @@ You can also use `mhealth` or `wisdm` as dataset options and experiment with dif
 | `Offline` | Offline without NCE Loss |
 | `Offline_NCE` | OOffline without NCE Losss |
 | `Online_Finetuning_NCE` | Online Finetuning with NCE Loss |
-| `G-Baseline_NCE_WFR` | PAC+ without Intance Replay |
+| `G-Baseline_NCE_WFR` | PACL+ without Intance Replay |
 | `EWC` | Elastic Weight Consolidation regularization method |
 
 ---
