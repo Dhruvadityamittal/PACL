@@ -1,6 +1,6 @@
 # 📦 PACL+: Online continual learning using proxy-anchor andcontrastive loss with Gaussian replay for sensor-based human activity recognition
 
-This project implements a continual learning framework for Human Activity Recognition (HAR) using Proxy Anchor Loss and Contrastive Learning loss. The framework is designed for user-centric class-incremental learning using IMU data, aiming to reduce catastrophic forgetting.
+This research presents PACL+, a novel continual learning method for Human Activity Recognition (HAR) that combines Proxy Anchor loss, contrastive learning, and Gaussian replay to reduce catastrophic forgetting. PACL+ effectively handles new activities and users, addressing challenges like subject-wise class imbalance and user-dependent learning. Evaluated on three benchmark HAR datasets, PACL+ outperforms state-of-the-art methods by achieving higher accuracy and F1 scores while maintaining performance on previously learned tasks.
 
 ---
 
