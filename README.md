@@ -70,6 +70,25 @@ You can also use `mhealth` or `wisdm` as dataset options and experiment with dif
 
 ---
 
+
+## 🎯 `--model` Options
+
+| Type | Description |
+|------|-------------|
+| `tinyhar` | Tinyhar backbone model |
+| `resnet18` | Resnet18 backbone model |
+
+---
+
+## 🎯 `--sampling` (Instance) Options
+
+| Type | Description |
+|------|-------------|
+| `Gaussian` | Gaussian Sampling |
+| `kde` | kde sampling |
+
+---
+
 ## ⚙️ Command-line Options
 
 | Argument | Description | Default |
