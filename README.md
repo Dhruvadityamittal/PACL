@@ -89,7 +89,7 @@ You can also use `mhealth` or `wisdm` as dataset options and experiment with dif
 
 ---
 
-## ⚙️ Command-line Options
+## ⚙️ Other Command-line Options
 
 | Argument | Description | Default |
 |----------|-------------|---------|
@@ -100,7 +100,6 @@ You can also use `mhealth` or `wisdm` as dataset options and experiment with dif
 | `--epochs` | Number of training epochs | `100` |
 | `--gpu-id` | GPU ID for training | `0` |
 | `--workers` | DataLoader workers | `4` |
-| `--model` | Model to use (`resnet18`, `tinyhar`) | `resnet18` |
 | `--loss` | Loss function (`Proxy_Anchor`, `Contrastive`) | `Proxy_Anchor` |
 | `--optimizer` | Optimizer to use | `adamw` |
 | `--lr` | Learning rate | `1e-3` |
@@ -110,7 +109,6 @@ You can also use `mhealth` or `wisdm` as dataset options and experiment with dif
 | `--bn-freeze` | Freeze batch norm layers | `True` |
 | `--l2-norm` | Use L2 normalization | `True` |
 | `--use_wandb` | Use Weights & Biases logging | `False` |
-| `--contrastive_loss_type` | Type of contrastive loss (e.g., `G-Baseline_NCE`, `Offline`, `EWC`, etc.) | `G-Baseline_NCE` |
 | `--only_test_step1` | Test only initial step | `False` |
 | `--only_test_step2` | Test only incremental step | `False` |
 | `--standarization_prerun` | Data standardization before training | `False` |
@@ -119,7 +117,6 @@ You can also use `mhealth` or `wisdm` as dataset options and experiment with dif
 | `--log_results` | Log results | `True` |
 | `--session_split` | Use session-wise split | `True` |
 | `--visualize_proxies` | Visualize learned proxies | `False` |
-| `--sampling` | Replay sampling type (`Gaussian`, `kde`) | `Gaussian` |
 | `--exp` | Experiment ID | `'0'` |
 | `--kd_weight` | Knowledge distillation weight | `10` |
 | `--pa_weight` | Proxy anchor loss weight | `1` |
