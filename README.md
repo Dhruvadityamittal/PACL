@@ -66,7 +66,7 @@ You can also use `mhealth` or `wisdm` as dataset options and experiment with dif
 | `--epochs` | Number of training epochs | `100` |
 | `--gpu-id` | GPU ID for training | `0` |
 | `--workers` | DataLoader workers | `4` |
-| `--model` | Model to use (`resnet18`, `resnet50`, `VIT`) | `resnet18` |
+| `--model` | Model to use (`resnet18`, `tinyhar`) | `resnet18` |
 | `--loss` | Loss function (`Proxy_Anchor`, `Contrastive`) | `Proxy_Anchor` |
 | `--optimizer` | Optimizer to use | `adamw` |
 | `--lr` | Learning rate | `1e-3` |
