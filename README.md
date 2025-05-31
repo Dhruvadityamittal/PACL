@@ -53,7 +53,22 @@ You can also use `mhealth` or `wisdm` as dataset options and experiment with dif
 
 ---
 
-## ⚙️ Command-line Options
+
+## 🎯 `--contrastive_loss_type` Options
+
+| Type | Description |
+|------|-------------|
+| `G-Baseline_NCE` | PACL+ |
+| `G-Baseline_Contrastive` | Pairwise Contrastive |
+| `G-Baseline` | No Contrative |
+| `Online_Finetuning` |  Online Finetuning without NCE Loss |
+| `Offline` | Offline without NCE Loss |
+| `Offline_NCE` | OOffline without NCE Losss |
+| `Online_Finetuning_NCE` | Online Finetuning with NCE Loss |
+| `G-Baseline_NCE_WFR` | PAC+ without Intance Replay |
+| `EWC` | Elastic Weight Consolidation regularization method |
+
+---
 
 ## ⚙️ Command-line Options
 
