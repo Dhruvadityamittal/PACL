@@ -69,6 +69,15 @@ You can also use `mhealth` or `wisdm` as dataset options and experiment with dif
 | `EWC` | Elastic Weight Consolidation regularization method |
 
 ---
+## 🎯 `--dataset` Options
+
+| Type | Description |
+|------|-------------|
+| `wisdm` | wisdm data |
+| `realworld` | realworld data |
+| `mhealth` | mhealth data |
+
+---
 
 
 ## 🎯 `--model` Options
