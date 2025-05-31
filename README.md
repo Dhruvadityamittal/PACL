@@ -6,9 +6,9 @@ This project implements a continual learning framework for Human Activity Recogn
 
 ## 📚 Datasets Used
 
-- RealWorld
-- MHEALTH
-- WISDM
+- RealWorld - https://archive.ics.uci.edu/dataset/319/mhealth+dataset
+- MHEALTH - https://archive.ics.uci.edu/dataset/319/mhealth+dataset
+- WISDM  - https://www.cis.fordham.edu/wisdm/dataset.php
 
 Ensure these datasets are downloaded and properly organized before running the experiments.
 
