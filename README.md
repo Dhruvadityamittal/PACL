@@ -1,4 +1,4 @@
-# 📦 Continual Learning for IMU-based Human Activity Recognition
+# 📦 PACL+: Online continual learning using proxy-anchor andcontrastive loss with Gaussian replay for sensor-based human activity recognition
 
 This project implements a continual learning framework for Human Activity Recognition (HAR) using Proxy Anchor Loss and Contrastive Learning loss. The framework is designed for user-centric class-incremental learning using IMU data, aiming to reduce catastrophic forgetting.
 
