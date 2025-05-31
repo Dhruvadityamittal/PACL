@@ -1,23 +1,29 @@
 # 📦 Continual Learning for IMU-based Human Activity Recognition
 
-This project implements a continual learning framework for Human Activity Recognition (HAR) using Inertial Measurement Unit (IMU) data. It compares different replay strategies (Gaussian, KDE) and continual learning methods for class-incremental learning in user-centric settings.
+This project implements a continual learning framework for Human Activity Recognition (HAR) using Proxy Anchor Loss and Contrastive Learning loss
 
 ---
 
-## 📁 Project Structure
+## 📁 Datasets
+
+Realworld
+MHEALTH
+Wisdm
 
 ---
 
 ## 🚀 Setup Instructions
 
+
 ### 1. Clone the Repository
+git clone https://github.com/Dhruvadityamittal/PACL.git
+cd PACL
+### 2. Create a conda environment
+conda create -n PACL python=3.8.10
+### 3. Activate conda environment
+conda activate PACL
+### 4. Install all the requirements
+pip install -r requiments.txt
+### 5. Execute the python code
+python CGCD-HAR_GBASELINE_WANDB_ALL_session.py --dataset='realworld' --contrastive_loss_type='G-Baseline_NCE'
 
-```bash
-git clone https://github.com/your-username/imu-cl-framework.git
-cd imu-cl-framework
-
-
-python -m venv venv
-source venv/bin/activate        # On Unix/Mac
-venv\Scripts\activate
-pip install -r requirements.txt
