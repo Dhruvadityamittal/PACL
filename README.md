@@ -17,22 +17,37 @@ Ensure these datasets are downloaded and properly organized before running the e
 ## 🚀 Setup Instructions
 
 ### 1. Clone the Repository
+
+```bash
 git clone https://github.com/Dhruvadityamittal/PACL.git
 cd PACL
+```
 
 ### 2. Create a Conda Environment
+
+```bash
 conda create -n PACL python=3.8.10
+```
 
 ### 3. Activate the Environment
+
+```bash
 conda activate PACL
+```
 
 ### 4. Install Required Dependencies
+
+```bash
 pip install -r requirements.txt
+```
 
 ✅ Ensure the file is correctly named `requirements.txt`.
 
 ### 5. Run the Code
+
+```bash
 python CGCD-HAR_GBASELINE_WANDB_ALL_session.py --dataset='realworld' --contrastive_loss_type='G-Baseline_NCE'
+```
 
 You can also use `mhealth` or `wisdm` as dataset options and experiment with different contrastive loss types.
 
@@ -42,14 +57,14 @@ You can also use `mhealth` or `wisdm` as dataset options and experiment with dif
 
 | Argument                  | Description                                    | Example                          |
 |---------------------------|------------------------------------------------|----------------------------------|
-| --dataset                 | Dataset to use (realworld, mhealth, etc.)     | --dataset='realworld'           |
-| --contrastive_loss_type   | Type of contrastive loss to apply              | --contrastive_loss_type='G-Baseline_NCE' |
+| `--dataset`               | Dataset to use (`realworld`, `mhealth`, etc.) | `--dataset='realworld'`         |
+| `--contrastive_loss_type` | Type of contrastive loss to apply              | `--contrastive_loss_type='G-Baseline_NCE'` |
 
 ---
 
 ## 📩 Contact
 
-For issues or questions, please reach out via GitHub or email:
+For issues or questions, please reach out via GitHub or email:  
 📧 dhruvadityamittal@gmail.com
 
 ---
