@@ -55,10 +55,44 @@ You can also use `mhealth` or `wisdm` as dataset options and experiment with dif
 
 ## ⚙️ Command-line Options
 
-| Argument                  | Description                                    | Example                          |
-|---------------------------|------------------------------------------------|----------------------------------|
-| `--dataset`               | Dataset to use (`realworld`, `mhealth`, etc.) | `--dataset='realworld'`         |
-| `--contrastive_loss_type` | Type of contrastive loss to apply              | `--contrastive_loss_type='G-Baseline_NCE'` |
+## ⚙️ Command-line Options
+
+| Argument | Description | Default |
+|----------|-------------|---------|
+| `--LOG_DIR` | Path to log folder | `./logs` |
+| `--dataset` | Dataset name (`realworld`, `mhealth`, `pamap`, `wisdn`) | `realworld` |
+| `--embedding-size` | Embedding size | `1024` |
+| `--batch-size` | Batch size | `256` |
+| `--epochs` | Number of training epochs | `100` |
+| `--gpu-id` | GPU ID for training | `0` |
+| `--workers` | DataLoader workers | `4` |
+| `--model` | Model to use (`resnet18`, `resnet50`, `VIT`) | `resnet18` |
+| `--loss` | Loss function (`Proxy_Anchor`, `Contrastive`) | `Proxy_Anchor` |
+| `--optimizer` | Optimizer to use | `adamw` |
+| `--lr` | Learning rate | `1e-3` |
+| `--alpha` | Scaling parameter | `16` |
+| `--mrg` | Margin | `0.4` |
+| `--warm` | Warm-up epochs | `5` |
+| `--bn-freeze` | Freeze batch norm layers | `True` |
+| `--l2-norm` | Use L2 normalization | `True` |
+| `--use_wandb` | Use Weights & Biases logging | `False` |
+| `--contrastive_loss_type` | Type of contrastive loss (e.g., `G-Baseline_NCE`, `Offline`, `EWC`, etc.) | `G-Baseline_NCE` |
+| `--only_test_step1` | Test only initial step | `False` |
+| `--only_test_step2` | Test only incremental step | `False` |
+| `--standarization_prerun` | Data standardization before training | `False` |
+| `--standarization_run_time` | Data standardization during training | `False` |
+| `--learnable_loss_weights` | Use learnable loss weights | `True` |
+| `--log_results` | Log results | `True` |
+| `--session_split` | Use session-wise split | `True` |
+| `--visualize_proxies` | Visualize learned proxies | `False` |
+| `--sampling` | Replay sampling type (`Gaussian`, `kde`) | `Gaussian` |
+| `--exp` | Experiment ID | `'0'` |
+| `--kd_weight` | Knowledge distillation weight | `10` |
+| `--pa_weight` | Proxy anchor loss weight | `1` |
+| `--processes` | Number of processes | `1` |
+| `--threads` | Number of threads | `32` |
+
+---
 
 ---
 
