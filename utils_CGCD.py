@@ -675,6 +675,7 @@ def get_cluster_information_raw(x, ys_, sampling):
             cluster_data = flattened_class_data[predicted_clusters == cluster_idx]
             class_clusters_data.append(cluster_data)
             if(sampling == 'kde'):  # USing KDE for sampling
+                
                 class_fitted_kdes.append(KernelDensity(kernel='gaussian', bandwidth=0.1).fit(cluster_data))
             else:   # Using Gaussian Distribution
                 mean = np.mean(cluster_data, axis=0)  # Shape: (100, 3)
@@ -687,6 +688,7 @@ def get_cluster_information_raw(x, ys_, sampling):
     return all_class_clusters, all_class_clusters_kde_fits
 
 def get_sampled_data_kde_raw(cluster_data, samples_each_class, fitted_kdes):
+
 
     x_sampled = []
     y_sampled = []
@@ -796,7 +798,8 @@ def visualize_sampling_raw(actual_data, y_initial_train, classes, cluster_data, 
     
 
     # Display the plot
-    fig.show()
+    # fig.show()  Comment when running on Cluster
+
     fig.write_image(f"/netscratch/dmittal/continual_learning/Visualizations/interactive_pca_visualization_raw_method_{method}.png")
     fig.write_image(f"/netscratch/dmittal/continual_learning/Visualizations/interactive_pca_visualization_raw_method_{method}.pdf", format='pdf', engine="kaleido")
 

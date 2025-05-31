@@ -1,4 +1,7 @@
 import os
+import psutil
+import tracemalloc
+
 os.system('pip install einops')
 os.system('pip install pytorch_metric_learning')
 os.system('pip install plotly')
@@ -10,7 +13,7 @@ os.system('pip install calflops')
 
 
 from torch.profiler import profile, record_function, ProfilerActivity
-from thop import profile as profile_thop
+
 
 import argparse, os, copy, random, sys
 import itertools
@@ -26,9 +29,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import torch.optim as optim
-from sklearn.cluster import AffinityPropagation
-from sklearn.mixture import GaussianMixture
-from functools import partial
 from tqdm import *
 import dataset, utils_CGCD, losses, net
 from net.resnet import *
@@ -36,12 +36,10 @@ from models.modelgen import ModelGen, ModelGen_new
 # from torchsummary import summary
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import f1_score
-import json
+
 from infoNCE import InfoNCE
 from utils_CGCD import calculate_accuracy
 import os
-from collections import Counter
-import multiprocessing
 import logging
 import time
 
@@ -70,7 +68,7 @@ parser.add_argument('--LOG_DIR', default='./logs', help='Path to log folder')
 parser.add_argument('--dataset', default='realworld', help='Training dataset, e.g. mhealth, realworld, pamap, wisdn') 
 parser.add_argument('--embedding-size', default=1024, type=int, dest='sz_embedding', help='Size of embedding that is appended to backbone model.')
 parser.add_argument('--batch-size', default=256, type=int, dest='sz_batch', help='Number of samples per batch.')  # 150
-parser.add_argument('--epochs', default=10, type=int, dest='nb_epochs', help='Number of training epochs.')
+parser.add_argument('--epochs', default=100, type=int, dest='nb_epochs', help='Number of training epochs.')
 parser.add_argument('--gpu-id', default=0, type=int, help='ID of GPU that is used for training.')
 parser.add_argument('--workers', default=4, type=int, dest='nb_workers', help='Number of workers for dataloader.')
 parser.add_argument('--model', default='resnet18', help='Model for training')  # resnet50 #resnet18  VIT
@@ -84,15 +82,15 @@ parser.add_argument('--bn-freeze', default=True, type=bool, help='Batch normaliz
 parser.add_argument('--l2-norm', default=True, type=bool, help='L2 normlization') 
 parser.add_argument('--use_wandb', default=False, type=bool, help='Use Wanb to upload parameters')
 parser.add_argument('--contrastive_loss_type', default='G-Baseline_NCE', help='Type of Contrastive Loss: G-Baseline_NCE, G-Baseline_Contrastive, G-Baseline, Online_Finetuning, Offline, Offline_NCE, Online_Finetuning_NCE, G-Baseline_NCE_WFR, EWC' )
-parser.add_argument('--only_test_step1', default=True, type=bool, help='Test only Initial Step (No training if set to True)')
+parser.add_argument('--only_test_step1', default=False, type=bool, help='Test only Initial Step (No training if set to True)')
 parser.add_argument('--only_test_step2', default=False, type=bool, help='Test only Incremental Step (No training if set to True)')
 parser.add_argument('--standarization_prerun', default=False, type=bool, help='Data Standarization Preruntime') 
 parser.add_argument('--standarization_run_time', default=False, type=bool, help='Data Standarization RunTime')
 parser.add_argument('--learnable_loss_weights', default=True, type=bool, help='Use Learnable Loss?')
 parser.add_argument('--log_results', default=True, type=bool, help='Do you want to log the results')
 parser.add_argument('--session_split', default=True, type=bool, help='Session Split')
-parser.add_argument('--visualize_proxies', default=True, type=bool, help='Session Split')
-parser.add_argument('--sampling', default='kde', help='Replay Sampling Type : Gaussian/Kde')
+parser.add_argument('--visualize_proxies', default=False, type=bool, help='Session Split')
+parser.add_argument('--sampling', default='Gaussian', help='Replay Sampling Type : Gaussian/kde')
 parser.add_argument('--exp', type=str, default='0')
 parser.add_argument('--kd_weight', default = 10, type=float)
 parser.add_argument('--pa_weight', default = 1 , type=float)
@@ -107,7 +105,7 @@ lrs = [1e-4]
 kd_weights = [100] #[1,5,10, 15, 20]
 pa_wights = [20] #[1, 5, 10, 15, 20]
 contrastive_weights = [20]#[1,10]
-folds = [0]# [0,1,2,3,4] #[0,1,2,3,4] #[0,1,2,3,4] #[0,1,2,3,4] #[0,1,2,3,4] #[0,1,2,3,4] #[0,1,2,3,4]#[0,1,2,3,4] #[1,2,3,4,5]  #[1,2,3,4,5]
+folds = [0,1,2,3,4] #[0,1,2,3,4] #[0,1,2,3,4] #[0,1,2,3,4] #[0,1,2,3,4] #[0,1,2,3,4] #[0,1,2,3,4]#[0,1,2,3,4] #[1,2,3,4,5]  #[1,2,3,4,5]
 
 results_df = pd.DataFrame(columns = ['Dataset', 'Iteration', 'Initial Acc', 'Initial F1', 'Incremental Acc Seen1',  'Incremental F1 Seen1', 'Incremental Acc Seen2',  'Incremental F1 Seen2', 'Incremental Acc Unseen', 'Incremental F1 Unseen', 'Incremental Acc All', 'Incremental F1 All', "Forget Acc", 'Forget F1' ])
 
@@ -743,7 +741,7 @@ if __name__ == '__main__':
         nb_subjects_now = dset_tr_now.nb_subjects()
         print("\n")
 
-
+        
 
         ####
         # If we're not just testing on step 2, proceed with training
@@ -777,14 +775,32 @@ if __name__ == '__main__':
         if args.contrastive_loss_type not in  ["Online_Finetuning", 'Offline', 'Online_Finetuning_NCE', 'Offline_NCE', 'G-Baseline_NCE_WFR', 'EWC']:
             # feats_initial_train, y_initial_train = utils_CGCD.evaluate_cos_(model, dlod_tr_0)
             
+
             # cluster_data, fitted_kdes = utils_CGCD.get_cluster_information(feats_initial_train.to('cpu').detach().numpy(), y_initial_train)
+            print(f"\nFitting for: {args.sampling}\n")
+            start_time = time.time()
+            process = psutil.Process(os.getpid())
+            before = process.memory_info().rss
+            tracemalloc.start()
             cluster_data_raw, fitted_kdes_raw = utils_CGCD.get_cluster_information_raw(dset_tr_0.xs, dset_tr_0.ys, args.sampling)
+            current, peak = tracemalloc.get_traced_memory()
+            end_time = time.time()
+            after = process.memory_info().rss
+
+            print(f"Number of points fitted {len(dset_tr_0.xs)}")
+            print(f"Elapsed Time: {end_time - start_time:.6f} seconds")
+            print(f"Memory used: {(after - before) / 1e6:.2f} MB")
+            print(f"Memory increase (current): {current / 1e6:.2f} MB")
+            print(f"Memory peak: {peak / 1e6:.2f} MB")
             
-            print("Visualizing Sampled Data")
-            utils_CGCD.visualize_sampling_raw(dset_tr_0.xs, dset_tr_0.ys, [1], cluster_data_raw, fitted_kdes_raw, method = args.sampling)
+           
+           
+            
+            # print("Visualizing Sampled Data")
+            # utils_CGCD.visualize_sampling_raw(dset_tr_0.xs, dset_tr_0.ys, [1], cluster_data_raw, fitted_kdes_raw, method = args.sampling)
         # utils_CGCD.plot_data(feats_initial_train, y_initial_train, 1, cluster_data, fitted_kdes)
             # exit()
-            
+         
         
         # Update number of classes for current training phase and initialize the proxy-anchor loss
         
@@ -801,7 +817,7 @@ if __name__ == '__main__':
         
         model_now = copy.deepcopy(model)
         model_now = model_now.to(device)
-
+        
         # Set up different learning rates for different parts of the model
         if args.model == 'tinyhar':
             param_groups = [
@@ -813,7 +829,7 @@ if __name__ == '__main__':
                 {'params': list(set(model_now.parameters()).difference(set(model_now.embedding.parameters()))) if gpu_id != -1 else list(set(model_now.module.parameters()).difference(set(model_now.module.model.embedding.parameters())))},
                 {'params': model_now.embedding.parameters() if gpu_id != -1 else model_now.embedding.parameters(), 'lr': float(args.lr) * 1},
             ]
-
+        
 
         # Add proxy-anchor parameters to optimizer with a higher learning rate
         param_groups.append({'params': criterion_pa_now.parameters(), 'lr': float(args.lr)})
@@ -889,9 +905,28 @@ if __name__ == '__main__':
   
             if args.contrastive_loss_type not in  ["Online_Finetuning", 'Offline', 'Online_Finetuning_NCE', 'Offline_NCE', 'G-Baseline_NCE_WFR', 'EWC']:
 
-                # Sampling 512 new instances.
-                x_sampled, y_sampled = utils_CGCD.get_sampled_data_kde_raw(cluster_data_raw, int(0.1*len(dset_tr_now.xs))//nb_classes, fitted_kdes_raw )
+                
 
+                # print(f"\nSampling for: {args.sampling}\n")
+                start_time = time.time()
+                process = psutil.Process(os.getpid())
+                before = process.memory_info().rss
+                tracemalloc.start()
+
+                x_sampled, y_sampled = utils_CGCD.get_sampled_data_kde_raw(cluster_data_raw, int(0.1*len(dset_tr_now.xs))//nb_classes, fitted_kdes_raw )
+                current, peak = tracemalloc.get_traced_memory()
+                end_time = time.time()
+                after = process.memory_info().rss
+                
+                # print(f"Number of points Sampled {len(x_sampled)}")
+                # print(f"Elapsed Time: {end_time - start_time:.6f} seconds")
+                # print(f"Memory used: {(after - before) / 1e6:.2f} MB")
+                # print(f"Memory increase (current): {current / 1e6:.2f} MB")
+                # print(f"Memory peak: {peak / 1e6:.2f} MB")
+
+
+
+                
                 x_sampled =  np.array(x_sampled).reshape(-1, dset_tr_now.xs[0].shape[0],  dset_tr_now.xs[0].shape[1])
                 # x_sampled = x_sampled
                 # y_sampled = y_sampled
